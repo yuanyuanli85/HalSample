@@ -24,7 +24,7 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ConsoleApplication1\ConsoleApplication1\HalBase.h">
+    <ClInclude Include="HalBase.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -35,13 +35,13 @@
     <ClCompile Include="haldemox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ConsoleApplication1\ConsoleApplication1\HalBase.cpp">
+    <ClCompile Include="HalBase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ConsoleApplication1\ConsoleApplication1\HalGen9.cpp">
+    <ClCompile Include="HalGen9.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ConsoleApplication1\ConsoleApplication1\HalGen11.cpp">
+    <ClCompile Include="HalGen11.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
