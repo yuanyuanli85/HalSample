@@ -32,3 +32,7 @@ int submit_command(HalBase *phal)
     return pxhal->submit_command();
 }
 ```
+
+####Remaining Issues
+>- The definition of HalGen9 and HalGen11 have to be included in HalBase.h . The perfect modularization is impossible in this method.
+>- The instantiation code in common layer can't be removed.  May use some compile-time technologies to create instances dynamically.
