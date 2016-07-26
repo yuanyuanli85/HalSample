@@ -28,30 +28,19 @@ Platform-specific class derived from HalBase.
 
 >- haldemox.cpp
 Code to simulate how to create instances of platform-classes and how to invoke interfaces at running time.
-```
-void test_v2(GEN_PLATFORM running_platfrom)
-{
-	//Init Class according to the running platform
-	HalBase *phal = NULL;
-	init(phal, running_platfrom);
-	
-	std::cout << "platform is " << phal->get_platfrom_id() << std::endl;
-	phal->load_kernel_binary();	
-	phal->submit_command();
-	
-	return;
-}
-```
+
+
 ####How to avoid moving everything to C++
 The cost will be very huge if we move everything to C++. It is better to keep C interfaces.
 >-  Common functions: keep as C interfaces
->- Platform related functions: provide C interface to access.
-```
-int HalCm_Submit_Command(pState)
-{
-	return pState->phal->submit_command();
-}
-```
+>- Platform related functions: provide C interface to access.  
+>
+	```
+	int HalCm_Submit_Command(pState)  
+	{ 
+		return pState->phal->submit_command();  
+	}  
+	```
 
 
 
