@@ -4,12 +4,16 @@ This sample try to figure out a way to solve the modularization problem.
 
 
 ####Problem to solve
-In this sample, we use two interfaces ```get_platform_id() ``` and ```submit_command()``` to show how to do modularization.```get_platform_id() ``` is a common interface to return platform id ; while ```submit_command()``` is a platform specific function, assume it is only available in gen9, but not implemented in gen11.  
+In this sample, we use two interfaces ```get_platform_id() ``` and ```submit_command()``` to show how to do modularization.
+> -  ```get_platform_id() ``` is a platform specific function to return platform id 
+> -  ```submit_command()```   is a platform specific function to submit commands. Each platform should have its own implementation.
+> -  ```submit_x_engine()```  is a function only available from gen10+
+> - ```load_kernel_binary()``` is a common function, not platform related.
 
 ####Key ideas
 
 > - Class 
-> - Template
+  Using multiple-layer hierarchy will bring casting effort in running time and let the code to invoke complex. To solve this problem, we put the limitation for class hierarchy, only two-layer allowed.
 
 ####Code Structure
 >- HalBase.cpp & HalBase.h
@@ -23,15 +27,33 @@ Platform-specific class derived from HalBase.
 ```submit_command()```  is not defined in ```HalGen11.cpp ``` to simulate the behavior of not-implemented functions on platform
 
 >- haldemox.cpp
-Code to simulate how to create instances of platform-classes and how to invoke interfaces at running time. 
+Code to simulate how to create instances of platform-classes and how to invoke interfaces at running time.
 ```
-template<class T>
-int submit_command(HalBase *phal)
+void test_v2(GEN_PLATFORM running_platfrom)
 {
-    T *pxhal = (T *)(phal);
-    return pxhal->submit_command();
+	//Init Class according to the running platform
+	HalBase *phal = NULL;
+	init(phal, running_platfrom);
+	
+	std::cout << "platform is " << phal->get_platfrom_id() << std::endl;
+	phal->load_kernel_binary();	
+	phal->submit_command();
+	
+	return;
 }
 ```
+####How to avoid moving everything to C++
+The cost will be very huge if we move everything to C++. It is better to keep C interfaces.
+>-  Common functions: keep as C interfaces
+>- Platform related functions: provide C interface to access.
+```
+int HalCm_Submit_Command(pState)
+{
+	return pState->phal->submit_command();
+}
+```
+
+
 
 ####Remaining Issues
 >- The definition of HalGen9 and HalGen11 have to be included in HalBase.h . Can be controlled by pre-processors passed by build scripts
