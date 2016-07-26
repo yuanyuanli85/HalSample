@@ -6,61 +6,23 @@
 #include <vector>
 
 
-// create all platfrom instances and push into vector
-void init(std::vector<HalBase *> &platform_vector)
-{
-    platform_vector.push_back(new HalGen11); // push gen11 to vector
 
-    platform_vector.push_back(new HalGen9); // push gen9 to vector
+
+int c_interface_submit_x_engine(HalBase *phal)
+{
+    return phal->submit_x_engine();
 }
 
-template<class T>
-int submit_command(HalBase *phal)
-{
-    T *pxhal = (T *)(phal);
-    return pxhal->submit_command();
-}
-
-
-void test_v1()
-{
-    //Create instances for all supported platforms.
-    //All instances are stored in a vector
-    std::vector<HalBase *> platform_vector;
-    init(platform_vector);
-
-    //get the platfrom at run time
-    GEN_PLATFORM running_platfrom = GEN11;
-
-    //use platform id to get the right instance
-    //invoke derived class's interface 
-    for (std::vector<HalBase *>::iterator it = platform_vector.begin();
-        it != platform_vector.end(); it++)
-    {
-        if (running_platfrom == (*it)->get_platfrom_id())
-        {
-            if ((*it)->get_platfrom_id() == GEN9)
-            {
-                submit_command<HalGen9>((*it));
-            }
-            if ((*it)->get_platfrom_id() == GEN11)
-            {
-                submit_command<HalGen11>((*it));
-            }
-            break;
-        }
-    }
-
-    return;
-}
-
-//v2: avoid creating all platform classes at the beginning.
-void init_v2(HalBase * &phal, GEN_PLATFORM running_platfrom)
+void init(HalBase * &phal, GEN_PLATFORM running_platfrom)
 {
     switch (running_platfrom)
     {
     case GEN9:
         phal = new HalGen9;
+        break;
+
+    case GEN10:
+        phal = new HalGen10;
         break;
 
     case GEN11:
@@ -70,34 +32,34 @@ void init_v2(HalBase * &phal, GEN_PLATFORM running_platfrom)
     return;
 }
 
-void test_v2()
+
+void test_v2(GEN_PLATFORM running_platfrom)
 {
-    //get the platfrom at run time
-    GEN_PLATFORM running_platfrom = GEN11;
 
-    //Init Class according to the running platform
-    HalBase *phal = NULL;
-    init_v2(phal, running_platfrom);
+	//Init Class according to the running platform
+	HalBase *phal = NULL;
+	init(phal, running_platfrom);
 
-    //Invoke right template with running platform
-    switch (running_platfrom)
-    {
-    case GEN9:
-        submit_command<HalGen9>(phal);
-        break;
+	std::cout << "platform is " << phal->get_platfrom_id() << std::endl;
 
-    case GEN11:
-        submit_command<HalGen11>(phal);
-        break;
-    }
+	phal->load_kernel_binary();
 
-    return;
+	phal->submit_command();
+
+	c_interface_submit_x_engine(phal);
+
+	return;
 }
+
 
 int _tmain(int argc, _TCHAR* argv[])
 {
     
-    test_v2();
+    test_v2(GEN9);
+
+	test_v2(GEN10);
+
+	test_v2(GEN11);
 
 	return 0;
 }
