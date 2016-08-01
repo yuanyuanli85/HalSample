@@ -1,6 +1,6 @@
 Hal layers Sample 
 ===================
-This sample try to figure out a way to solve the modularization problem. 
+This sample try to figure out a way to solve the modularization problem in hal layers and how to avoid platform code referred by common files. 
 
 
 ####Problem to solve
@@ -43,7 +43,14 @@ The cost will be very huge if we move everything to C++. It is better to keep C 
 	```
 
 
+####How to solve the platform files directly refered by common files
+There are two violations in previous solution. 
+>- The definition of HalGen9 and HalGen11 have to be included in HalBase.h 
+>- The instantiation code in common layer are not removed.
 
-####Remaining Issues
->- The definition of HalGen9 and HalGen11 have to be included in HalBase.h . Can be controlled by pre-processors passed by build scripts
->- The instantiation code in common layer are not removed.  May use some compile-time technologies to create instances dynamically.
+We use custom build in Cmake to dynamically generate the header ```HalInit.h``` and instantiation code ```init()```. The python scripts locates in ```scripts\HeaderGenerator.py``` whose input is the list of supported platforms. 
+
+Command to build code supports Gen9, Gen10 and Gen11 
+```$cmake  -Wno-dev -G "Visual Studio %CMAKE_MODE_VS%%CMAKE_ARCH%" %BUILD_ROOT% -DGEN9=1 -DGEN10=1 -DGEN11=1```  
+Command to build code supports Gen10 and Gen11 
+```$cmake  -Wno-dev -G "Visual Studio %CMAKE_MODE_VS%%CMAKE_ARCH%" %BUILD_ROOT% -DGEN10=1 -DGEN11=1```
