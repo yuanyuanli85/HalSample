@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "HalBase.h"
+#include "HalGen11.h"
 
 HalGen11::HalGen11()
 :mGenx(GEN11)

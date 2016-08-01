@@ -1,6 +1,6 @@
 
 #include "stdafx.h"
-#include "HalBase.h"
+#include "HalGen10.h"
 
 
 

@@ -1,6 +1,5 @@
 #include "stdafx.h"
-#include "HalBase.h"
-
+#include "HalGen9.h"
 
 
 HalGen9::HalGen9()
